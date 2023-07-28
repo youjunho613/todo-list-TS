@@ -1,5 +1,33 @@
-function App() {
-  return <div>안녕하세요</div>;
-}
+import { useState } from "react";
+import { styled } from "styled-components";
+import { Text } from "Style";
+import { Form } from "Components";
+import { ITodo } from "model";
+import { TodoList } from "Components";
 
-export default App;
+export const App = () => {
+  const [todoList, setTodoList] = useState<ITodo[]>([]);
+
+  return (
+    <Layout>
+      <Text as="h1">My Todo List</Text>
+      <Form todoList={todoList} setTodoList={setTodoList} />
+      <Main>
+        <TodoList
+          todoList={todoList}
+          setTodoList={setTodoList}
+          status={false}
+        />
+        <TodoList todoList={todoList} setTodoList={setTodoList} status={true} />
+      </Main>
+    </Layout>
+  );
+};
+
+const Layout = styled.div`
+  width: 1200px;
+  height: 100vh;
+  margin: auto;
+`;
+
+const Main = styled.main``;
