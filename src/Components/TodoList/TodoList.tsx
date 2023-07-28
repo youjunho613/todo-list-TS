@@ -1,5 +1,5 @@
 import { Button, Text } from "Style";
-import { Li, Ul } from "./TodoList.style";
+import { StyleLi, StyleUl, ButtonBox } from "./TodoList.style";
 import { ITodo } from "model";
 
 interface OwnProps {
@@ -22,20 +22,22 @@ export const TodoList = ({ todoList, setTodoList, status }: OwnProps) => {
   return (
     <>
       {status ? <Text>Done..</Text> : <Text>Ing..</Text>}
-      <Ul>
+      <StyleUl>
         {todoList
           .filter(todo => todo.isDone === status)
           .map(todo => {
             return (
-              <Li key={todo.id}>
+              <StyleLi key={todo.id}>
                 <Text>{todo.title}</Text>
                 <Text>{todo.content}</Text>
-                <Button onClick={() => deleteHandler(todo.id)}>삭제</Button>
-                <Button onClick={() => modifyHandler(todo.id)}>완료</Button>
-              </Li>
+                <ButtonBox>
+                  <Button onClick={() => deleteHandler(todo.id)}>삭제</Button>
+                  <Button onClick={() => modifyHandler(todo.id)}>완료</Button>
+                </ButtonBox>
+              </StyleLi>
             );
           })}
-      </Ul>
+      </StyleUl>
     </>
   );
 };

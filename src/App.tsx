@@ -9,7 +9,7 @@ export const App = () => {
   const [todoList, setTodoList] = useState<ITodo[]>([]);
 
   return (
-    <div>
+    <Layout>
       <Text as="h1">My Todo List</Text>
       <Form todoList={todoList} setTodoList={setTodoList} />
       <Main>
@@ -20,8 +20,14 @@ export const App = () => {
         />
         <TodoList todoList={todoList} setTodoList={setTodoList} status={true} />
       </Main>
-    </div>
+    </Layout>
   );
 };
 
-export const Main = styled.main``;
+const Layout = styled.div`
+  width: 1200px;
+  height: 100vh;
+  margin: auto;
+`;
+
+const Main = styled.main``;
