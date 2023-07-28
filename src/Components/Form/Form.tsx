@@ -2,22 +2,22 @@ import { Button, Input, Text } from "Style";
 import { ITodo } from "model";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { StyleForm } from "./Form.style";
+import { useDispatch, useSelector } from "react-redux";
+import { addTodoList } from "redux/modules";
+import { RootState } from "redux/config/configStore";
 
 const initialValue: ITodo = { title: "", content: "", id: 1, isDone: false };
 
-interface OwnProps {
-  todoList: ITodo[];
-  setTodoList: React.Dispatch<React.SetStateAction<ITodo[]>>;
-}
-
-export const Form = ({ todoList, setTodoList }: OwnProps) => {
+export const Form = () => {
   const [value, setValue] = useState<ITodo>(initialValue);
+  const todoList = useSelector((state: RootState) => state.todoList.todoList);
+  const dispatch = useDispatch();
 
   const onSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const todoId =
-      todoList.length > 0 ? todoList[todoList.length - 1].id + 1 : 1;
-    setTodoList([...todoList, { ...value, id: todoId }]);
+    const length = todoList.length;
+    const todoId: number = length > 0 ? todoList[length - 1].id + 1 : 1;
+    dispatch(addTodoList({ ...value, id: todoId }));
     setValue(initialValue);
   };
 
