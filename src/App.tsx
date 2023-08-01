@@ -1,24 +1,11 @@
-import { styled } from "styled-components";
-import { Text } from "Style";
-import { Form, TodoList } from "Components";
+import { Detail, Home } from "page";
+import { Route, Routes } from "react-router";
 
 export const App = () => {
   return (
-    <Layout>
-      <Text as="h1">My Todo List</Text>
-      <Form />
-      <Main>
-        <TodoList status={false} />
-        <TodoList status={true} />
-      </Main>
-    </Layout>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/detail/:id" element={<Detail />} />
+    </Routes>
   );
 };
-
-const Layout = styled.div`
-  width: 1200px;
-  height: 100vh;
-  margin: auto;
-`;
-
-const Main = styled.main``;
