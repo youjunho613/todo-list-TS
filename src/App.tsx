@@ -1,33 +1,11 @@
-import { useState } from "react";
-import { styled } from "styled-components";
-import { Text } from "Style";
-import { Form } from "Components";
-import { ITodo } from "model";
-import { TodoList } from "Components";
+import { Detail, Home } from "page";
+import { Route, Routes } from "react-router";
 
 export const App = () => {
-  const [todoList, setTodoList] = useState<ITodo[]>([]);
-
   return (
-    <Layout>
-      <Text as="h1">My Todo List</Text>
-      <Form todoList={todoList} setTodoList={setTodoList} />
-      <Main>
-        <TodoList
-          todoList={todoList}
-          setTodoList={setTodoList}
-          status={false}
-        />
-        <TodoList todoList={todoList} setTodoList={setTodoList} status={true} />
-      </Main>
-    </Layout>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/detail/:id" element={<Detail />} />
+    </Routes>
   );
 };
-
-const Layout = styled.div`
-  width: 1200px;
-  height: 100vh;
-  margin: auto;
-`;
-
-const Main = styled.main``;

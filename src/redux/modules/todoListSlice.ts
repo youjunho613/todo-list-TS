@@ -1,35 +1,39 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ITodo } from "model";
 
-interface IRedux {
-  todoList: ITodo[];
-}
-
-const initialState: IRedux = { todoList: [] };
+const initialState: ITodo[] = [];
 
 const todoList = createSlice({
   name: "todoList",
   initialState,
   reducers: {
-    addTodoList: (state: IRedux, action: PayloadAction<ITodo>): IRedux => ({
+    addTodoList: (state: ITodo[], action: PayloadAction<ITodo>): ITodo[] => [
       ...state,
-      todoList: [...state.todoList, action.payload],
-    }),
-    removeTodo: (state: IRedux, action: PayloadAction<number>): IRedux => ({
-      ...state,
-      todoList: state.todoList.filter(
-        (todo: ITodo): boolean => todo.id !== action.payload
-      ),
-    }),
-    modifyTodo: (state: IRedux, action: PayloadAction<number>): IRedux => ({
-      ...state,
-      todoList: state.todoList.map(
+      action.payload,
+    ],
+    removeTodo: (state: ITodo[], action: PayloadAction<number>): ITodo[] =>
+      state.filter((todo: ITodo): boolean => todo.id !== action.payload),
+
+    isDoneTodo: (state: ITodo[], action: PayloadAction<number>): ITodo[] =>
+      state.map(
         (todo: ITodo): ITodo =>
           todo.id === action.payload ? { ...todo, isDone: !todo.isDone } : todo
       ),
-    }),
+
+    modifyTodo: (state: ITodo[], action: PayloadAction<ITodo>) =>
+      state.map(
+        (todo: ITodo): ITodo =>
+          todo.id === action.payload.id
+            ? {
+                ...todo,
+                title: action.payload.title,
+                content: action.payload.content,
+              }
+            : todo
+      ),
   },
 });
 
-export const { addTodoList, removeTodo, modifyTodo } = todoList.actions;
+export const { addTodoList, removeTodo, isDoneTodo, modifyTodo } =
+  todoList.actions;
 export default todoList.reducer;

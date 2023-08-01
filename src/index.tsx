@@ -3,6 +3,10 @@ import { StrictMode } from "react";
 import { App } from "App";
 import { Provider } from "react-redux";
 import store from "redux/config/configStore";
+import GlobalStyle from "Style/GlobalStyle";
+import { ThemeProvider } from "styled-components";
+import { theme } from "Style/theme";
+import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -10,8 +14,13 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <Provider store={store}>
-    <StrictMode>
-      <App />
-    </StrictMode>
+    <ThemeProvider theme={theme}>
+      <StrictMode>
+        <BrowserRouter>
+          <GlobalStyle />
+          <App />
+        </BrowserRouter>
+      </StrictMode>
+    </ThemeProvider>
   </Provider>
 );

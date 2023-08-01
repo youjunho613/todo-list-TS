@@ -1,36 +1,42 @@
-import { Button, Text } from "Style";
+import { Button, StyleText } from "Components";
 import { StyleLi, StyleUl, ButtonBox } from "./TodoList.style";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "redux/config/configStore";
-import { modifyTodo, removeTodo } from "redux/modules";
+import { isDoneTodo } from "redux/modules";
+import { Link } from "react-router-dom";
 
-interface OwnProps {
+interface IProps {
   status: boolean;
 }
 
-export const TodoList = ({ status }: OwnProps) => {
-  const todoList = useSelector((state: RootState) => state.todoList.todoList);
-  console.log("todoList :", todoList);
+export const TodoList = ({ status }: IProps) => {
+  const todoList = useSelector((state: RootState) => state.todoList);
+
   const dispatch = useDispatch();
-
-  const deleteHandler = (id: number) => dispatch(removeTodo(id));
-
-  const modifyHandler = (id: number) => dispatch(modifyTodo(id));
+  const isDoneHandler = (id: number) => dispatch(isDoneTodo(id));
 
   return (
     <>
-      {status ? <Text>Done..</Text> : <Text>Ing..</Text>}
+      {status ? (
+        <StyleText as="h2">Done..</StyleText>
+      ) : (
+        <StyleText as="h2">Ing..</StyleText>
+      )}
       <StyleUl>
         {todoList
           .filter(todo => todo.isDone === status)
           .map(todo => {
             return (
               <StyleLi key={todo.id}>
-                <Text>{todo.title}</Text>
-                <Text>{todo.content}</Text>
+                <StyleText fontSize={26}>{todo.title}</StyleText>
+                <StyleText>{todo.content}</StyleText>
                 <ButtonBox>
-                  <Button onClick={() => deleteHandler(todo.id)}>삭제</Button>
-                  <Button onClick={() => modifyHandler(todo.id)}>완료</Button>
+                  <Link to={`/detail/${todo.id}`}>
+                    <Button>상세보기</Button>
+                  </Link>
+                  <Button onClick={() => isDoneHandler(Number(todo?.id))}>
+                    완료
+                  </Button>
                 </ButtonBox>
               </StyleLi>
             );
