@@ -1,23 +1,41 @@
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
-type TInputValue = {
-  [key: string]: string | number;
-};
+export const useInputForm = <
+  T extends Record<keyof T, string | number | boolean>
+>(
+  initialValue: T
+) => {
+  const [inputValue, setInputValue] = useState(initialValue);
+  const [isValid, setIsValid] = useState(false);
 
-export const useForm = <T extends TInputValue>(initialData: T) => {
-  const [inputValue, setInputValue] = useState(initialData);
+  const inputs = useRef(new Map<string, HTMLInputElement>());
 
-  const onChange = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
-    setInputValue(prev => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
-  }, []);
+  const validation = () => {
+    const _isValid = [...inputs.current.values()].every(input => {
+      const { required, validity } = input;
+
+      return !required || validity.valid;
+    });
+
+    setIsValid(_isValid);
+  };
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = event.target;
+
+    setInputValue(prev => ({ ...prev, [name]: value }));
+
+    validation();
+  };
 
   const register = (name: keyof T) => ({
     name,
-    value: inputValue[name] || "",
+    value: inputValue[name],
     onChange,
+    ref: (element: HTMLInputElement) => {
+      inputs.current.set(name as string, element);
+    },
   });
-  return { Value: inputValue, register };
+
+  return { inputValue, setInputValue, register, isValid } as const;
 };

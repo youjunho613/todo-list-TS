@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ITodo } from "model";
+import type { ITodo } from "model";
 
 const initialState: ITodo[] = [];
 

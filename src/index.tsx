@@ -1,12 +1,12 @@
-import ReactDOM from "react-dom/client";
-import { StrictMode } from "react";
 import { App } from "App";
-import { Provider } from "react-redux";
-import store from "redux/config/configStore";
 import GlobalStyle from "Style/GlobalStyle";
-import { ThemeProvider } from "styled-components";
 import { theme } from "Style/theme";
+import { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import store from "redux/config/configStore";
+import { ThemeProvider } from "styled-components";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

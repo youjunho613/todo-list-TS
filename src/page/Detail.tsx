@@ -1,43 +1,46 @@
-import { Button, Input, StyleText } from "Components";
-import { Link } from "react-router-dom";
+import { Button, Header, Input, StyleText } from "Components";
+import { useInputForm } from "hooks/useForm";
+import type { ITodo } from "model";
+import { FormEvent, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Params, useNavigate, useParams } from "react-router";
-import { styled } from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { RootState } from "redux/config/configStore";
 import { modifyTodo, removeTodo } from "redux/modules";
-import { ITodo } from "model";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { styled } from "styled-components";
 
 export const Detail = () => {
   const params: Readonly<Params<string>> = useParams();
   const navigator = useNavigate();
-  const todo: ITodo | undefined = useSelector((state: RootState) =>
+  const todo = useSelector((state: RootState) =>
     state.todoList.find((todo: ITodo): boolean => todo.id === Number(params.id))
   );
 
   const dispatch = useDispatch();
+  const [isModify, setIsModify] = useState(false);
+
+  const initialValue: Pick<ITodo, "title" | "content"> = {
+    title: todo?.title || "",
+    content: todo?.content || "",
+  };
+
+  const { inputValue, setInputValue, register } = useInputForm(initialValue);
+
   const deleteHandler = (id: number) => {
     dispatch(removeTodo(id));
     navigator("/");
   };
 
-  const initialValue: ITodo = {
-    title: "",
-    content: "",
-    id: todo?.id || 0,
-    isDone: todo?.isDone || false,
-  };
-
-  const [isModify, setIsModify] = useState(false);
-  const [modifyValue, setModifyValue] = useState<ITodo>(initialValue);
-
-  const onChangeHandler = (event: ChangeEvent<HTMLInputElement>): void =>
-    setModifyValue({ ...modifyValue, [event.target.name]: event.target.value });
-
   const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    dispatch(modifyTodo(modifyValue));
-    setModifyValue(initialValue);
+    dispatch(
+      modifyTodo({
+        ...inputValue,
+        id: todo?.id as number,
+        isDone: todo?.isDone as boolean,
+      })
+    );
+    setInputValue(initialValue);
     setIsModify(false);
   };
 
@@ -59,54 +62,65 @@ export const Detail = () => {
     </ButtonBox>
   );
 
+  if (!todo) {
+    return (
+      <Layout>
+        <Header />
+        <DetailBox>
+          <StyleBox>
+            {/* FIXME 왜 fontAlign && textAlign 만 경고를 띄우는지? */}
+            <StyleText fontAlign="center" fontSize={40} color="red">
+              Todo가 없습니다
+            </StyleText>
+            <ButtonBox>
+              <Link to="/">
+                <Button type="button">이전으로</Button>
+              </Link>
+            </ButtonBox>
+          </StyleBox>
+        </DetailBox>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      {isModify ? (
-        <StyleBox as="form" onSubmit={onSubmitHandler}>
-          <StyleText>ID : {todo?.id}</StyleText>
-          <Input
-            name={"title"}
-            value={modifyValue.title}
-            placeholder={todo?.title}
-            onChange={onChangeHandler}
-          />
-          <Input
-            name={"content"}
-            value={modifyValue.content}
-            placeholder={todo?.content}
-            onChange={onChangeHandler}
-          />
-          {buttons}
-        </StyleBox>
-      ) : (
-        <StyleBox>
-          <StyleText>ID : {todo?.id}</StyleText>
-          <StyleText as="h2">{todo?.title}</StyleText>
-          <StyleText>{todo?.content}</StyleText>
-          {buttons}
-        </StyleBox>
-      )}
+      <Header />
+      <DetailBox>
+        {isModify ? (
+          <StyleBox as="form" onSubmit={onSubmitHandler}>
+            <StyleText>ID : {todo?.id}</StyleText>
+            <Input {...register("title")} />
+            <Input {...register("content")} />
+            {buttons}
+          </StyleBox>
+        ) : (
+          <StyleBox>
+            <StyleText>ID : {todo?.id}</StyleText>
+            <StyleText as="h2">{todo?.title}</StyleText>
+            <StyleText>{todo?.content}</StyleText>
+            {buttons}
+          </StyleBox>
+        )}
+      </DetailBox>
     </Layout>
   );
 };
 
 const Layout = styled.div`
+  width: 1200px;
+  height: 100vh;
+  margin: auto;
+`;
+
+const DetailBox = styled.div`
   position: relative;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   gap: 50px;
-
-  width: 1200px;
-  max-width: 1200px;
-
-  height: 100vh;
-  min-width: 800px;
-
-  padding: 30px 40px;
-  margin: 0px auto;
 `;
 
 const StyleBox = styled.div`

@@ -1,9 +1,16 @@
 import { StyleText } from "Components/Common";
+import { styled } from "styled-components";
 
 export const Header = () => {
   return (
-    <header>
+    <StyleHeader>
       <StyleText as="h1">My Todo List</StyleText>
-    </header>
+    </StyleHeader>
   );
 };
+
+const StyleHeader = styled.header`
+  position: sticky;
+  top: 0;
+  left: 0;
+`;

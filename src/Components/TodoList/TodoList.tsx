@@ -1,9 +1,9 @@
 import { Button, StyleText } from "Components";
-import { StyleLi, StyleUl, ButtonBox } from "./TodoList.style";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { RootState } from "redux/config/configStore";
 import { isDoneTodo } from "redux/modules";
-import { Link } from "react-router-dom";
+import { ButtonBox, StyleLi, StyleUl } from "./TodoList.style";
 
 interface IProps {
   status: boolean;

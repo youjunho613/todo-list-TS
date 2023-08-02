@@ -24,4 +24,8 @@ export const StyleButton = styled.button`
     position: relative;
     top: 2px;
   }
+
+  &:disabled {
+    opacity: 0.6;
+  }
 `;
